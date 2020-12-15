@@ -174,6 +174,7 @@ def geolocation(request):
     # print(json_list)
     return render(request, "stream.html", {"address": address})
 
+
 def location(request):
     template = loader.get_template('main.html')
     return HttpResponse(template.render({}, request))
