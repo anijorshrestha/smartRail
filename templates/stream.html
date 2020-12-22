@@ -36,36 +36,10 @@
 
     </div>
     </div>
-{#    <script>#}
-{#        document.getElementById("x").innerHTML = address();#}
-{#        function address() {#}
-{#            {% for address in address %}#}
-{#                var addr = {{ address }};#}
-{##}
-{#            {% endfor %}#}
-{##}
-{#            return addr#}
-{##}
-{#        }#}
-{#    </script>#}
+
 <script>
 
-    {#var s = [];#}
-    var s={{ address }};
-    print(s)
-    var i = 0;
-    window.alert(s[1])
-{#    {% for address in address %}#}
-{#                window.alert({{ address }});#}
-{##}
-{#    {% endfor %}#}
 
-    (function loop() {
-        x.innerHTML = s[i];
-        if (++i < s.length) {
-            setTimeout(loop, 3000);  // call myself in 3 seconds time if required
-        }
-    })();
 
 
 </script>
