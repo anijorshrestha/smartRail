@@ -141,7 +141,7 @@ def stream_1():
 
 def geolocation(request):
     location = []
-    address = []
+    # address = []
     gps = ["50.817378, 12.929513"
         , "50.820713, 12.927411"
         , "50.821797, 12.926768"
