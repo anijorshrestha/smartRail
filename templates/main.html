@@ -69,9 +69,18 @@
         <div class="col-sm-3"></div>
 
     </div>
-    <div class="row">
-        <a href="http://127.0.0.1:8000/geolocation">Geolocation</a>
-        <p> Get the live Location</p>
+   <div class="row" >
+{#        <a href="http://127.0.0.1:8000/geolocation">Geolocation</a>#}
+       <div class="col">
+           <button class="btn" onclick="getLocation()">Current Location</button>
+       </div>
+        <div id="addressGet">
+
+        </div>
+        <div id="gpsGet">
+
+        </div>
+
     </div>
 </div>
 
