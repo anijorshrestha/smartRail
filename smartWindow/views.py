@@ -139,41 +139,22 @@ def stream_1():
                b'Content-Type: image/jpeg\r\n\r\n' + open('demo.jpg', 'rb').read() + b'\r\n')
 
 
-def geolocation(request):
-    location = []
-    # address = []
-    gps = ["50.817378, 12.929513"
-        , "50.820713, 12.927411"
-        , "50.821797, 12.926768"
-        , "50.824712, 12.927068"
-        , "50.827951, 12.924387"
-        , "50.830879, 12.922414"
-        , "50.834104, 12.922864"
-        , "50.837221, 12.925824"
-        , "50.840013, 12.927433"]
-    geolocator = Nominatim(user_agent="SmartRail")
-    # rgeocode = (locator.reverse, min_delay_seconds=0.001)
-    # thisdict = {
-    # Latitude= ["50.817378","50.820713","50.821797"]
-    # ,50.824712 ,50.827951,50.830879,50.834104 ,50.837221 ,50.840013],
-    # Longitude= ["12.929513","12.927411","12.926768"]
-    # ,12.927068,12.924387,12.922414,12.922864,12.925824,12.927433]
-    # }
-    for x in range(len(gps)):
-        # test = geolocator.reverse("50.817378,12.929513")
-        # print('"' + str(Latitude[x])+","+ str(Longitude[x]) + '"')
-        # print(x)
-        # print(gps[0])
-        address.append(str(geolocator.reverse(gps[x])))
-        # address[x]= location.address[x]
-        # print(geolocator.reverse(('"' + str(thisdict['Latitude'][x])+","+ str(thisdict['Longitude'][x]) + '"')))
-        # location[x] = geolocator.reverse('"' + str(thisdict['Latitude'][x]) + "," + str(thisdict['Longitude'][x]) + '"')
-        # print(address)
-        # json_list = json.dumps(address)
-    # print("Jsonifyyy------>" )
-    # print(json_list)
-    return render(request, "stream.html", {"address": address})
+@csrf_exempt
+def location(request):
+    print("IN geolocationnn")
+    # xp = request.GET.get("earned_xp")
+    #
+    # request.POST.get('data')
 
+    if request.is_ajax and request.method == 'POST':
+        # access you data by playing around with the request.POST object
+        lat = request.POST['lat']
+        long = request.POST['long']
+        gps = [str(lat) + "," + str(long)]
+        print(gps)
+        geolocator = Nominatim(user_agent="SmartRail")
+        address = str(geolocator.reverse(gps))
+        return JsonResponse({'address': address, 'gps': gps})  # Sending an success response
 
 def location(request):
     template = loader.get_template('main.html')
