@@ -14,6 +14,7 @@ import numpy as np
 # import imutils
 import time
 import cv2
+from django.views.decorators.csrf import csrf_exempt
 from geopy.geocoders import Nominatim
 import simplejson as json
 
@@ -156,6 +157,6 @@ def location(request):
         address = str(geolocator.reverse(gps))
         return JsonResponse({'address': address, 'gps': gps})  # Sending an success response
 
-def location(request):
-    template = loader.get_template('main.html')
-    return HttpResponse(template.render({}, request))
+# def location(request):
+#     template = loader.get_template('main.html')
+#     return HttpResponse(template.render({}, request))
