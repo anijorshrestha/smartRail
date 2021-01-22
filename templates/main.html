@@ -40,12 +40,12 @@
                     {#var instance = JSON.parse(response["address"]);#}
                     var result = xhr.responseText;
                     var json = eval("(" + result + ")");
-                    alert(json.gps)
+                    {#alert(json.gps)#}
                     document.getElementById('addressGet').innerHTML = json.address;
                     document.getElementById('gpsGet').innerHTML = json.gps;
                 }
             }
-            var fd = new FormData();
+            {#var fd = new FormData();#}
             {#fd.append("lat", lat);#}
             {#fd.append("long", long);#}
             xhr.send(params);

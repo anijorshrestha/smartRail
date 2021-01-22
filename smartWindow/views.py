@@ -123,7 +123,7 @@ def stream_1():
                 confidence = confidences[i]
                 color = colors[class_ids[i]]
                 cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
-                cv2.putText(frame, label + " " + str(round(confidence, 2)), (x, y + 30), font, 1, (255, 255, 255), 2)
+                cv2.putText(frame, label + " " + str(round(confidence, 2)), (x, y + 30), font, 1, (0, 0, 0), 2)
 
         elapsed_time = time.time() - starting_time
         fps = frame_id / elapsed_time
