@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.sites import requests
 from django.shortcuts import render
 from django.http import JsonResponse
 # Create your views here.
@@ -29,7 +30,15 @@ def video_feed_1(request):
 
 
 def stream_1():
-    classes = []
+    classes = ['Fraunhofer Society', 'MERGE Research Centre', 'TUC Orange Building']
+    today = datetime.datetime.now()
+    api_key = "9d151b0f0a64c86337b0094a98ee7132"
+    base_url = "http://api.openweathermap.org/data/2.5/weather?"
+    city_name = "Chemnitz"
+    complete_url = base_url + "appid=" + api_key + "&q=" + city_name
+    response = requests.get(complete_url)
+    x = response.json()
+    print(x)
 
     with open('smartWindow/yolo/coco.names', 'r') as f:
         classes = f.read().splitlines()
