@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.sites import requests
 from django.shortcuts import render
 from django.http import JsonResponse
 # Create your views here.
@@ -29,24 +30,21 @@ def video_feed_1(request):
 
 
 def stream_1():
-    classes = []
+    classes = ['Fraunhofer Society', 'MERGE Research Centre', 'TUC Orange Building']
+    today = datetime.datetime.now()
+    api_key = "9d151b0f0a64c86337b0094a98ee7132"
+    base_url = "http://api.openweathermap.org/data/2.5/weather?"
+    city_name = "Chemnitz"
+    complete_url = base_url + "appid=" + api_key + "&q=" + city_name
+    response = requests.get(complete_url)
+    x = response.json()
+    print(x)
 
     with open('smartWindow/yolo/coco.names', 'r') as f:
         classes = f.read().splitlines()
 
     print(classes)
 
-    # construct the argument parse and parse the arguments
-    # ap = argparse.ArgumentParser()
-    # ap.add_argument("-i", "--input", required=True,	help="path to input video")
-    # ap.add_argument("-o", "--output", required=True,	help="path to output video")
-    # ap.add_argument("-y", "--yolo", required=True, help="base path to YOLO directory")
-    # ap.add_argument("-c", "--confidence", type=float, default=0.5, help="minimum probability to filter weak detections")
-    # ap.add_argument("-t", "--threshold", type=float, default=0.3, help="threshold when applyong non-maxima suppression")
-    # args = vars(ap.parse_args())
-    #
-    #
-    print("till here")
 
     # load the COCO class labels our YOLO model was trained on
     labelsPath = 'smartWindow/yolo/coco.names'
