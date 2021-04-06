@@ -157,7 +157,7 @@ def stream_1():
                 confidence = confidences[i]
                 color = colors[class_ids[i]]
 
-                cv2.rectangle(frame, (x, y), (x + w, y + h), color, 1)
+                # cv2.rectangle(frame, (x, y), (x + w, y + h), color, 1)
 
                 # cv2.rectangle(frame, (x, y-10), (x + w, y + h), color, 2)
                 cv2.rectangle(frame, (x, y - 25), (x+w, y-5), (0, 0, 0), -1)
@@ -235,13 +235,13 @@ def location(request):
         complete_url = base_url + "at=" + lat + "%2C" + long+"&lang=en-US&apikey="+api_key
         response = requests.get(complete_url)
         location = response.json()
-        print(location)
+        # print(location)
         items=location["items"]
-        print(items)
+        # print(items)
         title=items[0]["address"]
-        print(title)
+        # print(title)
         labels=title["label"]
-        print(labels)
+        # print(labels)
         addresslist=list(labels.split(","))
         global address
         address = addresslist[0]
