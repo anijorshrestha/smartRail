@@ -1,11 +1,7 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<!-- templatemo 419 black white -->
-    <!--
-    Black White
-    http://www.templatemo.com/preview/templatemo_419_black_white
-    -->
 	<title>Object Detection</title>
 	<meta name="keywords" content="" />
 	<meta name="description" content="" />
@@ -15,19 +11,183 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
+    <link rel="stylesheet" type="text/css" href="{% static 'SmartRail/css/loading-bar.css' %}"/>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="{% static 'SmartRail/js/loading-bar.js' %}"></script>
 
-      var lat;
-      var long;
+    <style>
+        .container {
+          position: relative;
+        }
+        .container .content {
+          position: absolute;
+          bottom: 8px;
+          background: rgb(0, 0, 0); /* Fallback color */
+          background: rgba(0, 0, 0, 0.3); /* Black background with 0.5 opacity */
+          color: #f1f1f1;
+          width: 25%;
+          padding: 5px;
+        }
+        #main_img{
+         border: 5px solid #555;}
 
-       function getLocation() {
-           navigator.geolocation.getCurrentPosition(showPosition);
+        .wrapper{
+          background: rgb(0, 0, 0); /* Fallback color */
+          background: rgba(0, 0, 0, 0.3); /* Black background with 0.5 opacity */
+          padding: 8px;
+          border-radius: 8px;
+          display: flex;
+          max-width: 450px;
+           visibility: hidden;
+            position: absolute;
+            bottom: 10px;
+            left: 21px;
         }
 
-        function showPosition(position) {
+        .place-image{
+          height: 85px;
+          width: 85px;
+          border-radius: 8px;
+            margin-top: 32px;
+        }
+
+         .weather-image{
+          height: 60px;
+          width: 60px;
+          border-radius: 8px;
+        }
+
+        .qr-image{
+          height: 85px;
+          width: 85px;
+          border-radius: 8px;
+          padding-left: 10px;
+            margin-top: 32px;
+        }
+        .details{
+          padding-left: 10px;
+          font-size: 16px;
+            color: white;
+        }
+        .details_info{
+          padding-left: 10px;
+          font-size: 13px;
+            color: white;
+        }
+
+         .place-name{
+          color: white;
+          font-size: 16px;
+          font-weight: 600;
+          margin-bottom: 3px;
+             background: rgba(76, 175 ,80,0.4 );
+             margin-right: -85px;
+             margin-left: -94px
+         ;
+        }
+        .icon{
+            left: 27px;
+            position: absolute;
+            top: 54px;
+        }
+
+        .clock {
+            background: rgb(0, 0, 0); /* Fallback color */
+            background: rgba(0, 0, 0, 0.3); /* Black background with 0.5 opacity */
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            max-width: 380px;
+            color: white;
+            position: absolute;
+            top: 10px;
+            left: 21px;
+        }
+
+        .weather_details {
+            background: rgb(0, 0, 0); /* Fallback color */
+            background: rgba(0, 0, 0, 0.3); /* Black background with 0.5 opacity */
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            max-width: 380px;
+            color: white;
+            position: absolute;
+            top: 10px;
+            left: 45%;
+        }
+        .stop {
+            background: rgb(0, 0, 0); /* Fallback color */
+            background: rgba(0, 0, 0, 0.3); /* Black background with 0.5 opacity */
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            max-width: 380px;
+            color: white;
+            position: absolute;
+            top: 10px;
+            right: 35px;
+        }
+
+    </style>
+
+    <script>
+        var lat;
+      var long;
+      var label;
+      var iconurl;
+      var currentTemp;
+      var weatherDesc;
+      window.onload = function () {
+          getLocation(); //Make sure the function fires as soon as the page is loaded
+          showTime();
+
+          {#nextStop();#}
+          setInterval(getLocation, 2000); //Then set it to run again after ten minutes
+      };
+      function getLocation() {
+           navigator.geolocation.getCurrentPosition(showPosition);
+        }
+      function showPosition(position) {
           lat=(position.coords.latitude);
           long=(position.coords.longitude);
           {#alert(lat)#}
+            var api_key1 = "OJg8NXsJIEKXA0nwO5gGBJRIqAdneDfX7u-fShxoIyQ";
+            var base_url1 = "https://transit.ls.hereapi.com/v3/stations/by_geocoord.json?";
+            var complete_url1 = base_url1 + "center=" + lat + "%2C" + long+"&radius=350&max=3&apiKey="+api_key1;
+
+            const xhr1= new XMLHttpRequest();
+
+                // listen for `onload` event
+                xhr1.onload = () => {
+                    // process response
+                    if (xhr1.status == 200) {
+                        // parse JSON data
+                        {#console.log(JSON.parse(xhr1.response));#}
+                        var result1 = xhr1.responseText;
+                        var json1 = eval("(" + result1 + ")");
+                        a = json1["Res"]
+                        b=a["Stations"]
+                        c=b["Stn"]
+                        station=c[0]["name"]
+                        distance=c[0]["distance"]
+                        document.getElementById("station").innerText = station;
+                        document.getElementById("station").textContent =station;
+                        document.getElementById("distance").innerText = distance + " m";
+                        document.getElementById("distance").textContent =distance+ " m";
+
+                    } else {
+                        console.error('Error!');
+                    }
+                };
+
+                // create a `GET` request
+                xhr1.open('GET', complete_url1);
+
+                // send request
+                xhr1.send();
+
           var xhr = new XMLHttpRequest();
             var params = 'lat=' + lat + '&long=' + long;
             xhr.open('POST', 'geolocation/', true);
@@ -36,57 +196,203 @@
             xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
             xhr.onload = function () {//Call a function when the state changes.
-                if (xhr.status == 200) {
+                if (xhr.status == 200 || xhr.status == 500) {
                     {#var instance = JSON.parse(response["address"]);#}
                     var result = xhr.responseText;
                     var json = eval("(" + result + ")");
-                    {#alert(json.gps)#}
-                    document.getElementById('addressGet').innerHTML = json.address;
-                    document.getElementById('gpsGet').innerHTML = json.gps;
+                    {#var iconurl=json.iconurl;#}
+                    label=json.label;
+
+                    {#currentTemp=json.currentTemp;#}
+                    {#weatherDesc=json.weatherDesc#}
+                    {#document.getElementById("ic").src = iconurl;#}
+                    {#document.getElementById('addressGet').innerHTML = json.address;#}
+                    {#document.getElementById('weatherDesc').innerHTML=weatherDesc;#}
+                    {#document.getElementById('weather').innerHTML=currentTemp;#}
                 }
+            };
+            if (label=="Fraunhofer Society"){
+                document.getElementById("1").style.visibility = "visible";
+            }
+            if (label=="MERGE Research Centre"){
+                document.getElementById("2").style.visibility = "visible";
+                document.getElementById("2").style.left = "500px";
+            }
+            if (label=="TUC Orange Building"){
+                document.getElementById("3").style.visibility = "visible";
+                document.getElementById("3").style.left = "1000px";
             }
             {#var fd = new FormData();#}
             {#fd.append("lat", lat);#}
             {#fd.append("long", long);#}
             xhr.send(params);
+
+
         }
+      function showTime(){
+            var date = new Date();
+            console.log(date)
+            const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+            var h = date.getHours();
+            var m = date.getMinutes();
+            var s = date.getSeconds();
+            var day = date.getDate();
+          console.log(day)
+            var month =  monthNames[date.getMonth()];
+            var year = date.getFullYear();
+            var session = "AM";
+
+            if(h == 0){
+                h = 12;
+            }
+
+            if(h > 12){
+                h = h - 12;
+                session = "PM";
+            }
+
+            h = (h < 10) ? "0" + h : h;
+            m = (m < 10) ? "0" + m : m;
+            s = (s < 10) ? "0" + s : s;
+
+            var time = h + ":" + m + ":" + s + " " + session;
+            var dat = day +", "+month+" "+year;
+            console.log(dat);
+            var api_key = "9d151b0f0a64c86337b0094a98ee7132";
+            var base_url = "http://api.openweathermap.org/data/2.5/weather?";
+            var city_name="Chemnitz";
+            var complete_url = base_url + "appid=" + api_key + "&q=" + city_name;
+            const xhr = new XMLHttpRequest();
+
+                // listen for `onload` event
+                xhr.onload = () => {
+                    // process response
+                    if (xhr.status == 200) {
+                        // parse JSON data
+                        {#console.log(JSON.parse(xhr.response));#}
+                        var result = xhr.responseText;
+                        var json = eval("(" + result + ")");
+                        {#console.log(json)#}
+                        if( json["cod"] != "404"){
+                            y = json["main"]
+                            z = json["weather"]
+                            coord = json["coord"]
+                            Kelvin = y["temp"]
+                            current_temperature = Kelvin-273.15
+                            var temperature=current_temperature.toString();
+                            var temps=temperature.substring(0,1)
+                            console.log(temps)
+                            if (temps=="-"){
+                                var temp=temperature.substring(0,2)
+                                console.log(temp)
+                            }else
+                                var temp=temperature.substring(0,1)
+                            weather_description = z[0]["description"]
+                            icon = z[0]["icon"]
+                            console.log(icon)
+                            window.lat=coord["lat"]
+                            window.long=coord["lon"]
+                            {#console.log(lat)#}
+                            iconurl = "http://openweathermap.org/img/w/" +icon+ ".png";
+
+                            document.getElementById("weather").innerText = temp + " C";
+                            document.getElementById("weather").textContent = temp + " C";
+                            document.getElementById("weatherDesc").innerText = weather_description;
+                            document.getElementById("weatherDesc").textContent = weather_description;
+                            {#document.getElementById("icon").innerText = weather_description;#}
+                            {#document.getElementById("icon").textContent = weather_description;#}
+                            document.getElementById("ic").src = iconurl;
+                        }
+
+                    } else {
+                        console.error('Error!');
+                    }
+                };
+
+                // create a `GET` request
+                xhr.open('GET', complete_url);
+
+                // send request
+                xhr.send();
+            document.getElementById("DigitalCLOCK").innerText = time;
+            document.getElementById("DigitalCLOCK").textContent = time;
+            document.getElementById("date").innerText = dat;
+            document.getElementById("date").textContent = dat;
+            {#alert(dat)#}
+
+            setTimeout(showTime, 1000);
+        }
+
     </script>
+    </head>
+    <body >
+    <div class="container-fluid">
+        <img src="{% url 'video-feed-1' %}"  id="main_img" height="720px" width="1500px" >
+        <div class="clock" >
+            <div class="details">
+                <div id="DigitalCLOCK"   onload="showTime()"></div>
+                <div id="date"   onload="showTime()"></div>
 
-
-</head>
-<body>
-<div class="jumbotron text-center">
-  <h1>Smart Window</h1>
-</div>
-<div class="container">
-    <div class="row">
-        <div class="col-sm-3"></div>
-        <div class="col-sm-6">
-            <p>
-            <img src="{% url 'video-feed-1' %}" alt="">
-        </p>
+            </div>
         </div>
-        <div class="col-sm-3"></div>
+        <div class="weather_details">
 
-    </div>
-   <div class="row" >
-{#        <a href="http://127.0.0.1:8000/geolocation">Geolocation</a>#}
-       <div class="col">
-           <button class="btn" onclick="getLocation()">Current Location</button>
-       </div>
-        <div id="addressGet">
+            <div id="icon">
+                <img id="ic" src=""  class="weather-image"/>
+            </div>
+            <div class="details">
+            <div id="weather" onload="showTime()"></div>
+            <div id="weatherDesc" onload="showTime()"></div>
 
         </div>
-        <div id="gpsGet">
+        </div>
+{#        <div class="icon">#}
+{#            <img id="ic" src="" />#}
+{#        </div>#}
 
+
+        <div class="wrapper" id="1">
+          <img src="{% static 'SmartRail/image/Fraunhofer_IWU.jpg' %}" class="place-image" />
+          <div class="details_info">
+                  <div class="place-name">Fraunhofer Society </div>
+           <div>
+            The Fraunhofer Society is a German research organization with 72 institutes spread throughout Germany, each focusing on different fields of applied science.
+          </div>
+          </div>
+            <img src="{% static 'SmartRail/image/qr-code (1).png' %}"  class="qr-image">
+        </div>
+        <div class="wrapper" id="2">
+          <img src="{% static 'SmartRail/image/merge_research.jfif' %}" class="place-image" />
+          <div class="details_info">
+                  <div class="place-name">MERGE Research Centre </div>
+          <div>
+            The "Lightweight Technologies MERGE" research center creates the prerequisites for fusion of the different basic technologies and the pooling of the expert knowledge of the participating scientists.
+          </div>
+          </div>
+            <img src="{% static 'SmartRail/image/qr-code.png' %}"  class="qr-image">
+        </div>
+        </div>
+    ```<div class="wrapper" id="3">
+          <img src="{% static 'SmartRail/image/TUC.jpg' %}" class="place-image" />
+          <div class="details_info">
+                  <div class="place-name">TUC Orange Building</div>
+          <div>
+            The "Lightweight Technologies MERGE" research center creates the prerequisites for fusion of the different basic technologies and the pooling of the expert knowledge of the participating scientists.
+          </div>
+          </div>
+            <img src="{% static 'SmartRail/image/tuc.png' %}"  class="qr-image">
+        </div>
         </div>
 
-    </div>
-</div>
-
-
-
-
-
-</body>
+        <div class="stop" >
+            <div class="details">
+                <div>
+                    Nearest Station
+                </div>
+                <div id="station"></div>
+                <div id="distance"></div>
+            </div>
+        </div>
+        </div>
+    </body>
 </html>

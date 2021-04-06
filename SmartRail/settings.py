@@ -50,6 +50,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'SmartRail.urls'
+STATIC_URL = '/static/'
+STATICFILES_DIRS=[
+    BASE_DIR / 'templates/static'
+]
 
 TEMPLATES = [
     {
