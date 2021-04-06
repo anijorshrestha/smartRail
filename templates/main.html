@@ -81,7 +81,7 @@
           font-size: 16px;
           font-weight: 600;
           margin-bottom: 3px;
-             background: rgba(76, 175 ,80,0.4 );
+             background: rgba(76, 175 ,80,0.6 );
              margin-right: -85px;
              margin-left: -94px
          ;
@@ -130,6 +130,11 @@
             right: 35px;
         }
 
+        .headings{
+            background: rgba(76, 175 ,80,0.6 );
+            margin-left: -13px;
+        }
+
     </style>
 
     <script>
@@ -144,18 +149,22 @@
           showTime();
 
           {#nextStop();#}
-          setInterval(getLocation, 2000); //Then set it to run again after ten minutes
+          setInterval(getLocation, 10000);
+          {#setInterval(showPosition,1000)//Then set it to run again after ten minutes#}
       };
       function getLocation() {
            navigator.geolocation.getCurrentPosition(showPosition);
         }
       function showPosition(position) {
+
           lat=(position.coords.latitude);
           long=(position.coords.longitude);
+          console.log(lat)
+          console.log(long)
           {#alert(lat)#}
             var api_key1 = "OJg8NXsJIEKXA0nwO5gGBJRIqAdneDfX7u-fShxoIyQ";
             var base_url1 = "https://transit.ls.hereapi.com/v3/stations/by_geocoord.json?";
-            var complete_url1 = base_url1 + "center=" + lat + "%2C" + long+"&radius=350&max=3&apiKey="+api_key1;
+            var complete_url1 = base_url1 + "center=" + lat + "%2C" + long+"&radius=600&max=1&apiKey="+api_key1;
 
             const xhr1= new XMLHttpRequest();
 
@@ -170,12 +179,33 @@
                         a = json1["Res"]
                         b=a["Stations"]
                         c=b["Stn"]
+                        d=c[0]["Transports"]
+                        e=d["Transport"]
+                       var text = "";
+                        var i;
+                        for (i = 0; i < e.length; i++) {
+                           var x= toString(e[i]["name"])
+                            console.log(x)
+                            if  (text.includes(e[i]["name"])){
+                                continue
+                            }else {
+                                text += e[i]["name"] + ", ";
+                            }
+
+                        }
+
+                        {#e=d[0]["name"]#}
+
+                        {#console.log(d)#}
+                        {# console.log(text)#}
                         station=c[0]["name"]
                         distance=c[0]["distance"]
                         document.getElementById("station").innerText = station;
                         document.getElementById("station").textContent =station;
                         document.getElementById("distance").innerText = distance + " m";
                         document.getElementById("distance").textContent =distance+ " m";
+                        document.getElementById("trains").innerHTML= text;
+                        {#document.getElementById("trains").textContent =text;#}
 
                     } else {
                         console.error('Error!');
@@ -226,18 +256,18 @@
             {#fd.append("lat", lat);#}
             {#fd.append("long", long);#}
             xhr.send(params);
-
+          {#setTimeout(showPosition,1000)#}
 
         }
       function showTime(){
             var date = new Date();
-            console.log(date)
+            {#console.log(date)#}
             const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
             var h = date.getHours();
             var m = date.getMinutes();
             var s = date.getSeconds();
             var day = date.getDate();
-          console.log(day)
+          {#console.log(day)#}
             var month =  monthNames[date.getMonth()];
             var year = date.getFullYear();
             var session = "AM";
@@ -257,7 +287,7 @@
 
             var time = h + ":" + m + ":" + s + " " + session;
             var dat = day +", "+month+" "+year;
-            console.log(dat);
+            {#console.log(dat);#}
             var api_key = "9d151b0f0a64c86337b0094a98ee7132";
             var base_url = "http://api.openweathermap.org/data/2.5/weather?";
             var city_name="Chemnitz";
@@ -281,15 +311,15 @@
                             current_temperature = Kelvin-273.15
                             var temperature=current_temperature.toString();
                             var temps=temperature.substring(0,1)
-                            console.log(temps)
+                            {#console.log(temps)#}
                             if (temps=="-"){
                                 var temp=temperature.substring(0,2)
-                                console.log(temp)
+                                {#console.log(temp)#}
                             }else
                                 var temp=temperature.substring(0,1)
                             weather_description = z[0]["description"]
                             icon = z[0]["icon"]
-                            console.log(icon)
+                            {#console.log(icon)#}
                             window.lat=coord["lat"]
                             window.long=coord["lon"]
                             {#console.log(lat)#}
@@ -371,26 +401,28 @@
           </div>
             <img src="{% static 'SmartRail/image/qr-code.png' %}"  class="qr-image">
         </div>
-        </div>
-    ```<div class="wrapper" id="3">
+
+        <div class="wrapper" id="3">
           <img src="{% static 'SmartRail/image/TUC.jpg' %}" class="place-image" />
           <div class="details_info">
                   <div class="place-name">TUC Orange Building</div>
           <div>
-            The "Lightweight Technologies MERGE" research center creates the prerequisites for fusion of the different basic technologies and the pooling of the expert knowledge of the participating scientists.
+            The Orange building is one of the building of Technical University of Chemnitz. It is central lecture hall and seminar building. It is located in Reichenhainer Strasse 90.
           </div>
           </div>
             <img src="{% static 'SmartRail/image/tuc.png' %}"  class="qr-image">
         </div>
-        </div>
-
         <div class="stop" >
             <div class="details">
-                <div>
+                <div class="headings">
                     Nearest Station
                 </div>
                 <div id="station"></div>
                 <div id="distance"></div>
+                <div class="headings">
+                    Connecting Trains
+                </div>
+                 <div id="trains"></div>
             </div>
         </div>
         </div>
