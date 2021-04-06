@@ -12,7 +12,126 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	 <style>
+        .container {
+          position: relative;
+        }
+        .container .content {
+          position: absolute;
+          bottom: 8px;
+          background: rgb(0, 0, 0); /* Fallback color */
+          background: rgba(0, 0, 0, 0.3); /* Black background with 0.5 opacity */
+          color: #f1f1f1;
+          width: 25%;
+          padding: 5px;
+        }
+        #main_img{
+         border: 5px solid #555;}
 
+        .wrapper{
+          background: rgb(0, 0, 0); /* Fallback color */
+          background: rgba(0, 0, 0, 0.3); /* Black background with 0.5 opacity */
+          padding: 8px;
+          border-radius: 8px;
+          display: flex;
+          max-width: 450px;
+           visibility: hidden;
+            position: absolute;
+            bottom: 10px;
+            left: 21px;
+        }
+
+        .place-image{
+          height: 85px;
+          width: 85px;
+          border-radius: 8px;
+            margin-top: 32px;
+        }
+
+         .weather-image{
+          height: 60px;
+          width: 60px;
+          border-radius: 8px;
+        }
+
+        .qr-image{
+          height: 85px;
+          width: 85px;
+          border-radius: 8px;
+          padding-left: 10px;
+            margin-top: 32px;
+        }
+        .details{
+          padding-left: 10px;
+          font-size: 16px;
+            color: white;
+        }
+        .details_info{
+          padding-left: 10px;
+          font-size: 13px;
+            color: white;
+        }
+
+         .place-name{
+          color: white;
+          font-size: 16px;
+          font-weight: 600;
+          margin-bottom: 3px;
+             background: rgba(76, 175 ,80,0.6 );
+             margin-right: -85px;
+             margin-left: -94px
+         ;
+        }
+        .icon{
+            left: 27px;
+            position: absolute;
+            top: 54px;
+        }
+
+        .clock {
+            background: rgb(0, 0, 0); /* Fallback color */
+            background: rgba(0, 0, 0, 0.3); /* Black background with 0.5 opacity */
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            max-width: 380px;
+            color: white;
+            position: absolute;
+            top: 10px;
+            left: 21px;
+        }
+
+        .weather_details {
+            background: rgb(0, 0, 0); /* Fallback color */
+            background: rgba(0, 0, 0, 0.3); /* Black background with 0.5 opacity */
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            max-width: 380px;
+            color: white;
+            position: absolute;
+            top: 10px;
+            left: 45%;
+        }
+        .stop {
+            background: rgb(0, 0, 0); /* Fallback color */
+            background: rgba(0, 0, 0, 0.3); /* Black background with 0.5 opacity */
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            max-width: 380px;
+            color: white;
+            position: absolute;
+            top: 10px;
+            right: 35px;
+        }
+
+        .headings{
+            background: rgba(76, 175 ,80,0.6 );
+            margin-left: -13px;
+        }
+
+    </style>
 
 </head>
 <body>
@@ -39,7 +158,99 @@
 
 <script>
 
+ function showTime(){
+            var date = new Date();
+            {#console.log(date)#}
+            const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+            var h = date.getHours();
+            var m = date.getMinutes();
+            var s = date.getSeconds();
+            var day = date.getDate();
+          {#console.log(day)#}
+            var month =  monthNames[date.getMonth()];
+            var year = date.getFullYear();
+            var session = "AM";
 
+            if(h == 0){
+                h = 12;
+            }
+
+            if(h > 12){
+                h = h - 12;
+                session = "PM";
+            }
+
+            h = (h < 10) ? "0" + h : h;
+            m = (m < 10) ? "0" + m : m;
+            s = (s < 10) ? "0" + s : s;
+
+            var time = h + ":" + m + ":" + s + " " + session;
+            var dat = day +", "+month+" "+year;
+            {#console.log(dat);#}
+            var api_key = "9d151b0f0a64c86337b0094a98ee7132";
+            var base_url = "http://api.openweathermap.org/data/2.5/weather?";
+            var city_name="Chemnitz";
+            var complete_url = base_url + "appid=" + api_key + "&q=" + city_name;
+            const xhr = new XMLHttpRequest();
+
+                // listen for `onload` event
+                xhr.onload = () => {
+                    // process response
+                    if (xhr.status == 200) {
+                        // parse JSON data
+                        {#console.log(JSON.parse(xhr.response));#}
+                        var result = xhr.responseText;
+                        var json = eval("(" + result + ")");
+                        {#console.log(json)#}
+                        if( json["cod"] != "404"){
+                            y = json["main"]
+                            z = json["weather"]
+                            coord = json["coord"]
+                            Kelvin = y["temp"]
+                            current_temperature = Kelvin-273.15
+                            var temperature=current_temperature.toString();
+                            var temps=temperature.substring(0,1)
+                            {#console.log(temps)#}
+                            if (temps=="-"){
+                                var temp=temperature.substring(0,2)
+                                {#console.log(temp)#}
+                            }else
+                                var temp=temperature.substring(0,1)
+                            weather_description = z[0]["description"]
+                            icon = z[0]["icon"]
+                            {#console.log(icon)#}
+                            window.lat=coord["lat"]
+                            window.long=coord["lon"]
+                            {#console.log(lat)#}
+                            iconurl = "http://openweathermap.org/img/w/" +icon+ ".png";
+
+                            document.getElementById("weather").innerText = temp + " C";
+                            document.getElementById("weather").textContent = temp + " C";
+                            document.getElementById("weatherDesc").innerText = weather_description;
+                            document.getElementById("weatherDesc").textContent = weather_description;
+                            {#document.getElementById("icon").innerText = weather_description;#}
+                            {#document.getElementById("icon").textContent = weather_description;#}
+                            document.getElementById("ic").src = iconurl;
+                        }
+
+                    } else {
+                        console.error('Error!');
+                    }
+                };
+
+                // create a `GET` request
+                xhr.open('GET', complete_url);
+
+                // send request
+                xhr.send();
+            document.getElementById("DigitalCLOCK").innerText = time;
+            document.getElementById("DigitalCLOCK").textContent = time;
+            document.getElementById("date").innerText = dat;
+            document.getElementById("date").textContent = dat;
+            {#alert(dat)#}
+
+            setTimeout(showTime, 1000);
+        }
 
 
 </script>
