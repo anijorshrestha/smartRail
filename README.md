@@ -55,7 +55,7 @@ For this module we have created an web application named "Smart Window", which d
 
 Thank You
 
-
+![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
 
 
 
